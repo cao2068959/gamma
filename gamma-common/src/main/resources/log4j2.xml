@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration status="warn" monitorInterval="5">
+    <properties>
+        <property name="LOG_HOME">logs</property>
+        <Property name="pattern">%d{HH:mm:ss.SSS}[gamma-common]%c{36}:%L --- %m%n</Property>
+    </properties>
+
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS}[gamma-common]%c{36}:%L --- %m%n" />
+        </Console>
+
+
+        <File name="error" fileName="${LOG_HOME}/error.log" append="false">
+            <!-- 指定error 级别的日志 -->
+            <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout>
+                <pattern>%d{HH:mm:ss} --- %m%n</pattern>
+            </PatternLayout>
+        </File>
+
+        <RandomAccessFile name="accessFile" fileName="${LOG_HOME}/info.log">
+            <PatternLayout pattern="${pattern}" />
+        </RandomAccessFile>
+
+
+    </Appenders>
+
+    <Loggers>
+        <Root level="trace">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="accessFile" />
+            <AppenderRef ref="error" />
+
+        </Root>
+    </Loggers>
+</configuration>

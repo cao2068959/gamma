@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>gamma</artifactId>
+        <groupId>com.chy</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>scan-core</artifactId>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <encoding>UTF-8</encoding>
+                            <!--打成jar包后复制到的路径-->
+                            <outputDirectory>
+                                ${project.build.directory}/../../dist/
+                            </outputDirectory>
+                            <resources>
+                                <resource>
+                                    <!--项目中需要复制的文件路径-->
+                                    <directory>${project.basedir}/src/main/resources</directory>
+                                    <includes>
+                                        <include>config.properties</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <!--可配置多个提取复制路径只需要 “<id>”名字不一样即可-->
+                </executions>
+            </plugin>
+
+        </plugins>
+
+    </build>
+
+</project>

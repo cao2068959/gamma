@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration status="warn" monitorInterval="5">
+    <properties>
+        <property name="LOG_HOME">logs</property>
+        <Property name="pattern">%d{HH:mm:ss.SSS}[gamma-core]%c{36}:%L --- %m%n</Property>
+    </properties>
+
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS}%c{36}:%L --- %m%n" />
+        </Console>
+
+        <RandomAccessFile name="accessFile" fileName="${LOG_HOME}/gamma-core.log">
+            <PatternLayout pattern="${pattern}" />
+        </RandomAccessFile>
+
+        <File name="error" fileName="${LOG_HOME}/gamma-core-error.log" append="false">
+            <!-- 指定error 级别的日志 -->
+            <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout>
+                <pattern>${pattern}</pattern>
+            </PatternLayout>
+        </File>
+
+
+    </Appenders>
+
+    <Loggers>
+        <Root level="trace">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="error" />
+            <AppenderRef ref="accessFile" />
+        </Root>
+    </Loggers>
+</configuration>
