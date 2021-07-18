@@ -38,7 +38,7 @@
 
 ## 1.4 实际案例
 
-
+[spring接口扫描器插件](https://github.com/cao2068959/gamma-spring-api-scan)
 
 
 #2. 架构设计
@@ -89,6 +89,9 @@ __注意__:
 # 4. 插件
 
 `gamma`仅仅只是一个扫描引擎，当扫描到对应的`class`要如何处理， 需要编写`插件`来实现
+
+如：
+[spring接口扫描器插件](https://github.com/cao2068959/gamma-spring-api-scan)
 
 ## 4.1 自定义插件
 
@@ -268,5 +271,30 @@ public static Logger logger = LogUtils.getLogger("类路径");
  ![p4](/img/readme4.png)
 
 
+# 7. 嵌入式使用
 
+为了使用更方便，或者再开发插件的时候能够更好的测试，`gamma`也提供了嵌入式的使用方式
 
+__注意__:使用嵌入的方式只能执行一个插件
+
+- 安装`gamma-embed`模块
+进入本项目的`gamma-embed`模块下，执行命令
+```shell script
+mvn clean install
+```
+- 在代码中写入
+```java
+public static void main(String[] args) {
+        Map<String, String> config = new HashMap<>();
+        //插件的配置信息
+        config.put("endpoint.topology.host","127.0.0.1:8080");
+        config.put("ref","master");
+        config.put("commitId","1234567");
+        config.put("appName","1234567");
+        config.put("scan.package","com.chy,com.chy2,com.example");
+        //生成GammaContainer容器
+        GammaContainer gammaContainer = new GammaContainer("你要扫描的jar路径", config);
+        //执行插件
+        gammaContainer.start(new 你实现的Procession对象);
+    }
+```
