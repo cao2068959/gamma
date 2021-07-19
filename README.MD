@@ -1,11 +1,16 @@
-#1. 简介
+# 1. 简介
 
 本项目是一个jar文件扫描器，可以支持插件化订制不同的扫描逻辑
 
 和别的项目扫描器不同，很多插件扫描是`java` 文件，比如在编译期执行的`checkstyle` 插件等，而
 `gamma`扫描的是加载进jvm中的`class`文件
 
-## 1.1 为什么不去扫描java文件
+# 1.1 用途
+
+设计gamma的初衷是为了能在`ci流水线`中快速的检查已经打包好的的业务`jar`，并且能轻易的扩展扫描器的功能，以及和业务解耦
+
+
+## 1.2 为什么不去扫描java文件
 
 对于语法检查等`checkstyle`插件确实直接扫描`java`文件是更好的选择，但是扫描`java`文件意味着解析
 难度变大，需要去解析对应字符串到底是属于什么包
@@ -15,14 +20,14 @@
 上述需求如果直接去解析`java`文件就会很麻烦，因为虽然匹配上了字符串`@RequestMapping`但还需要去判断他的包名是否是属于
 `spring`, 还需要去解析对应注解中的参数，如果注解中使用了`常量`,还需要解析对应的常量类，然后才能获取真正的值
 
-## 1.2 为什么不去直接扫描class文件
+## 1.3 为什么不去直接扫描class文件
 
 通过一些字节码工具，如`asm`可以直接去解析`class文件`，这样确实可以解决上面提到扫描`java`文件中常量和类全称的问题，
 但是有一定的门槛，需要去学习`字节码`的相关知识和对应的操作`框架`
 
 
 
-## 1.3 gamma的优势
+## 1.4 gamma的优势
 
 `gamma`出现就是解决上面2个问题
 
@@ -41,7 +46,7 @@
 [spring接口扫描器插件](https://github.com/cao2068959/gamma-spring-api-scan)
 
 
-#2. 架构设计
+# 2. 架构设计
 
 上面简介中提到过，`gamma`的工作原理是将会 把`要扫描的jar`完全加载进入到`jvm`中，然后`处理器`将会依次获得对应的`class对象`
 ，处理器将可以使用反射的方式去处理获得的`class对象`（如：使用反射来获取对应`类`/`方法`上面是否存在`@RequestMapping`注解）
@@ -86,6 +91,14 @@ __注意__:
   java -jar gamma-bootstrap.jar source=你要扫描的jar路径
 ``` 
   
+当然如果你想修改`gamma`的源码那么修改完成后在项目根路径执行
+```java
+mvn clean package
+```
+执行结束后也会在`/dist`目录中生成新的 `gamma-bootstrap.jar`
+
+
+ 
 # 4. 插件
 
 `gamma`仅仅只是一个扫描引擎，当扫描到对应的`class`要如何处理， 需要编写`插件`来实现
@@ -95,7 +108,7 @@ __注意__:
 
 ## 4.1 自定义插件
 
-- clone本仓库，进入`gamma-common`目录执行maven命令来按照对应的依赖
+- clone本仓库，进入`gamma-common`目录执行maven命令来安装对应的依赖
 ```shell script
 mvn clean install
 ```
@@ -156,7 +169,7 @@ mvn clean package
 __注意__: 打出的插件`jar`需要把对应的第三方依赖也一起打包进插件`jar`中，可以使用以下配置来完成对应的操作
 
 添加对应的maven插件
-```shell script
+```xml
  <plugin>
     <artifactId>maven-assembly-plugin</artifactId>
     <executions>
@@ -178,7 +191,7 @@ __注意__: 打出的插件`jar`需要把对应的第三方依赖也一起打包
 </plugin>
 ```
 
-# 5 配置
+# 5. 配置
 
 在`gamma`中配置分成`2类`
 - `gamma`核心配置
@@ -272,6 +285,7 @@ public static Logger logger = LogUtils.getLogger("类路径");
 
 
 # 7. 嵌入式使用
+
 
 为了使用更方便，或者再开发插件的时候能够更好的测试，`gamma`也提供了嵌入式的使用方式
 
